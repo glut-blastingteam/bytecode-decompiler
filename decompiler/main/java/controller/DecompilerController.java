@@ -6,33 +6,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
-@Controller
+@RestController
 public class DecompilerController {
-    @RequestMapping(value = {"/","/step1","/index"})
-    public String index(){
-        return "step1";
-    }
-    @RequestMapping("/step2")
-    public String step2(){
-        return "step2";
-    }
-
-    @RequestMapping("/decompiler")
-    public String decompiler(@RequestParam("classfile") MultipartFile file, ModelMap m){
+    @ResponseBody
+    @RequestMapping(value = "/decompiler",produces="application/json")
+    public Map<String,String> decompiler(@RequestParam("classfile") MultipartFile file){
         byte[] bytes = null;
         try {
             bytes = file.getBytes();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         B2Json b2Json = B2Json.fromInputStream(new ByteArrayInputStream(bytes));
         b2Json.withOption(OptionConst.MORE_READABLE);
-        m.addAttribute("classfile_json_high",b2Json.toJsonString());
-        return "forward:/step2";
+
+        Map<String,String> m = new HashMap<>();
+        m.put("classfile_json_high",b2Json.toJsonString());
+        m.put("classfile_json_low",b2Json.toJsonString());
+        return m;
     }
 }
