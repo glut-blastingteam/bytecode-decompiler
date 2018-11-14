@@ -25,12 +25,11 @@ public class DecompilerController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        B2Json b2Json = B2Json.fromInputStream(new ByteArrayInputStream(bytes));
-        b2Json.withOption(OptionConst.MORE_READABLE);
-
         Map<String,String> m = new HashMap<>();
-        m.put("classfile_json_high",b2Json.toJsonString());
-        m.put("classfile_json_low",b2Json.toJsonString());
+        m.put("classfile_json_high",
+                B2Json.fromInputStream(new ByteArrayInputStream(bytes)).withOption(OptionConst.MORE_READABLE).toJsonString());
+        m.put("classfile_json_low",
+                B2Json.fromInputStream(new ByteArrayInputStream(bytes)).toJsonString());
         return m;
     }
 }
