@@ -6,8 +6,14 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"/>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/highlight.js/9.13.1/styles/atom-one-light.min.css" rel="stylesheet">
     <script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
+    <style type="text/css">
+        body {
+            font-family: monospace;
+            font-size: larger;
+        }
+    </style>
 </head>
 <body>
 
@@ -22,7 +28,7 @@
             </el-card>
         </el-header>
         <el-main>
-            <div class="step1" v-if="active==0">
+            <div class="step1" v-if="active==0" ref="pp">
                 <el-card class="box-card">
                     <el-upload
                             name="classfile"
@@ -40,12 +46,7 @@
             <div class="step2" v-if="active==1">
                 <el-tabs type="border-card" @tab-click="handleClick">
                     <el-tab-pane label="高级反编译" name="high_level">
-                        <pre>
-<code class="java" ref="jc">
-// Decompiling infrastructure provided by github.com/racaljk/bc2json
-{{ decompiled_java_code }}
-</code>
-                        </pre>
+                        <pre v-highlightjs="decompiled_java_code"><code class="java"></code></pre>
                     </el-tab-pane>
                     <el-tab-pane label="低级反编译" name="low_level">
                         low level
@@ -58,7 +59,43 @@
 </div>
 </body>
 <script>
-    // vue startup
+    var vueHighlightJS = {};
+    vueHighlightJS.install = function install(Vue) {
+        Vue.directive('highlightjs', {
+            deep: true,
+            bind: function bind(el, binding) {
+                var targets = el.querySelectorAll('code');
+                var target;
+                var i;
+
+                for (i = 0; i < targets.length; i += 1) {
+                    target = targets[i];
+
+                    if (typeof binding.value === 'string') {
+                        target.textContent = binding.value;
+                    }
+
+                    hljs.highlightBlock(target);
+                }
+            },
+            componentUpdated: function componentUpdated(el, binding) {
+                var targets = el.querySelectorAll('code');
+                var target;
+                var i;
+
+                for (i = 0; i < targets.length; i += 1) {
+                    target = targets[i];
+                    if (typeof binding.value === 'string') {
+                        target.textContent = binding.value;
+                    }
+                    hljs.highlightBlock(target);
+                }
+            }
+        });
+    };
+
+    Vue.use(vueHighlightJS);
+
     new Vue({
         el: '#app',
         data: {
@@ -69,20 +106,20 @@
 
         methods: {
             handleSuccess(res, file) {
-                this.active++
-                this.high_representation = eval('('+res.classfile_json_high+')')
-                console.log(this.high_representation)
-                this.decompiled_java_code
-                    = this.high_representation.access_flag + this.high_representation.this_class +"{\n"+"}"
-                console.log("before")
-            },
-        },
+                this.active++;
+                this.high_representation = eval('('+res.classfile_json_high+')');
+                console.log(this.high_representation);
 
-        watch:{
-            decompiled_java_code(newval,oldval){
-                console.log("after")
-                hljs.highlightBlock(this.$refs.jc);
-            }
+                this.decompiled_java_code = function(text){
+                    let result = '// Decompiling infrastructure provided by https://github.com/racaljk/bc2json\n' +
+                        '// And note that below codes are not exactly valid, you should not attempt to compile it\n';
+                    result += text.access_flag+' class ' + text.this_class + ' extends '+ text.super_class;
+                    result += '{// Explicit extended to java.lang.Object despite it was default behavior\n';
+
+                    result += '}\n';
+                    return result
+                }(this.high_representation)
+            },
         }
     })
 </script>
