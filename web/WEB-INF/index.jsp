@@ -41,7 +41,6 @@
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                     </el-upload>
                 </el-card>
-
             </div>
             <div class="step2" v-if="active==1">
                 <el-tabs type="border-card" @tab-click="handleClick">
@@ -55,7 +54,6 @@
             </div>
         </el-main>
     </el-container>
-
 </div>
 </body>
 <script>
@@ -111,20 +109,63 @@
                 console.log(this.high_representation);
 
                 this.decompiled_java_code = function(text){
-                    let result = '// This decompiling infrastructure was provided by https://github.com/racaljk/bc2json\n' +
-                        '// And note that below codes are not exactly valid, you should not attempt to compile it\n';
-                    result += text.access_flag+' class ' + text.this_class + ' extends '+ text.super_class + '\n';
+                    // Prelude comments
+                    let result =
+                        '// This decompiling infrastructure was provided by https://github.com/racaljk/bc2json\n' +
+                        '// And note that below codes are not exactly valid, you should not attempt to compile it\n' +
+                        '// Compiled with jdk_'+text.version+'\n';
+
+                    // Package declaration
+                    var class_name = text.this_class.split('.');
+                    if(class_name.length===2){
+                        result +='package '+class_name[0]+'\n\n';
+                    }
+
+                    // Class declaration
+                    result += text.access_flag+' class ' + (class_name.length===2?class_name[1]:class_name[0]) + ' extends '+ text.super_class;
+
+                    // Implemented interfaces
                     if(text.interfaces.length >0){
                         result +='\t\t implements ';
-                        for(var i=0;i<text.interfaces.length;i++){
+                        for(let i=0;i<text.interfaces.length;i++){
                             result+=text.interfaces[i];
-                            if(i!=text.interfaces.length-1){
+                            if(i!==text.interfaces.length-1){
                                 result+=',';
                             }
                         }
                     }
+
+                    // Left brace
                     result += '{\n';
 
+                    // Field
+                    for(let i=0;i<text.fields.length;i++){
+                        result +='\t';
+                        result += text.fields[i].field;
+                        result += ';\n';
+                    }
+
+                    // Method
+                    result +='\n';
+                    for(let i=0;i<text.methods.length;i++){
+                        result +='\t';
+                        result += text.methods[i].method_signature;
+                        result +='{\n';
+                        var op = text.methods[i].method_opcode.split(',');
+                        for(let k=0;k<op.length;k++){
+                            result += '\t\t'+op[k]+'\n';
+                        }
+                        if(text.methods[i].method_exceptions.length>0){
+                            result +='\t\t// Try-Catch-Finally exception tables\n';
+                            for(let p = 0;p<text.methods[i].method_exceptions.length;p++){
+                                result += '\t\t'+text.methods[i].method_exceptions[p]+'\n';
+                            }
+                        }
+
+                        result +='\t}\n'
+                    }
+
+                    // Right Brace
                     result += '}\n';
                     return result
                 }(this.high_representation)
