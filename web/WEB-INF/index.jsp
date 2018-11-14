@@ -111,10 +111,19 @@
                 console.log(this.high_representation);
 
                 this.decompiled_java_code = function(text){
-                    let result = '// Decompiling infrastructure provided by https://github.com/racaljk/bc2json\n' +
+                    let result = '// This decompiling infrastructure was provided by https://github.com/racaljk/bc2json\n' +
                         '// And note that below codes are not exactly valid, you should not attempt to compile it\n';
-                    result += text.access_flag+' class ' + text.this_class + ' extends '+ text.super_class;
-                    result += '{// Explicit extended to java.lang.Object despite it was default behavior\n';
+                    result += text.access_flag+' class ' + text.this_class + ' extends '+ text.super_class + '\n';
+                    if(text.interfaces.length >0){
+                        result +='\t\t implements ';
+                        for(var i=0;i<text.interfaces.length;i++){
+                            result+=text.interfaces[i];
+                            if(i!=text.interfaces.length-1){
+                                result+=',';
+                            }
+                        }
+                    }
+                    result += '{\n';
 
                     result += '}\n';
                     return result
