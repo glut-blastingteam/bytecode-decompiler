@@ -62,246 +62,71 @@
                             </el-collapse-item>
                         </el-collapse>
                     </el-tab-pane>
+
                     <el-tab-pane label="Constant pool" name="const_pool"
                                  v-if="low_representation.constants.slots.length>0">
-
-                            <el-table
-                                    :data="ConstantClassInfo"
-                                    stripe
-                                    style="width: 100%">
-                                <el-table-column
-                                        prop="index"
-                                        label="Index"
-                                        width="80">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="class_name"
-                                        label="Class name">
-                                </el-table-column>
-                            </el-table>
-
-                        <el-table
-                                :data="ConstantFieldRefInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="field_class"
-                                    label="Field class">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="field_name"
-                                    label="Field name">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="field_type"
-                                    label="Field type">
-                            </el-table-column>
+                        <el-table :data="ConstantFieldRefInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="field_class" label="Field class"></el-table-column>
+                            <<el-table-column prop="field_name" label="Field name"></el-table-column>
+                            <<el-table-column prop="field_type" label="Field type"></el-table-column>
                         </el-table>
 
-                        <el-table
-                                :data="ConstantMethodRefInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="method_class"
-                                    label="Method class">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="method_name"
-                                    label="Method name">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="method_type"
-                                    label="Method type">
-                            </el-table-column>
+                        <el-table :data="ConstantMethodRefInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="method_class" label="Method class"></el-table-column>
+                            <<el-table-column prop="method_name" label="Method name"></el-table-column>
+                            <<el-table-column prop="method_type" label="Method type"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantInterfaceMethodRefInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="interface_class"
-                                    label="Interface class">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="interface_name"
-                                    label="Interface name">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="interface_type"
-                                    label="Interface type">
-                            </el-table-column>
+                        <el-table :data="ConstantInterfaceMethodRefInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="interface_class" label="Interface class"></el-table-column>
+                            <<el-table-column prop="interface_name" label="Interface name"></el-table-column>
+                            <<el-table-column prop="interface_type" label="Interface type"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantStringInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="string"
-                                    label="String">
-                            </el-table-column>
+                        <el-table :data="ConstantStringInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="string" label="String"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantIntegerInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="value"
-                                    label="Value">
-                            </el-table-column>
+                        <el-table :data="ConstantIntegerInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="value" label="Value"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantFloatInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="value"
-                                    label="Value">
-                            </el-table-column>
+                        <el-table :data="ConstantFloatInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="value" label="Value"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantLongInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="value"
-                                    label="Value">
-                            </el-table-column>
+                        <el-table :data="ConstantLongInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="value" label="Value"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantDoubleInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="value"
-                                    label="Value">
-                            </el-table-column>
+                        <el-table :data="ConstantDoubleInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="value" label="Value"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantNameAndTypeInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="Name">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="descriptor"
-                                    label="Descriptor">
-                            </el-table-column>
+                        <el-table :data="ConstantNameAndTypeInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="name" label="Name"></el-table-column>
+                            <<el-table-column prop="descriptor" label="Descriptor"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantUtf8Info"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="utf8"
-                                    label="UTF8">
-                            </el-table-column>
+                        <el-table :data="ConstantUtf8Info" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="utf8" label="UTF8"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantMethodHandleInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="reference_kind"
-                                    label="Reference kind">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="reference_index"
-                                    label="Reference index">
-                            </el-table-column>
+                        <el-table :data="ConstantMethodHandleInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="reference_kind" label="Reference kind"></el-table-column>
+                            <<el-table-column prop="reference_index" label="Reference index"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantMethodTypeInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="descriptor"
-                                    label="Descriptor">
-                            </el-table-column>
+                        <el-table :data="ConstantMethodTypeInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="descriptor" label="Descriptor"></el-table-column>
                         </el-table>
-                        <el-table
-                                :data="ConstantInvokeDynamicInfo"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="index"
-                                    label="Index"
-                                    width="80">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="bootstrap_method_index"
-                                    label="Bootstrap method index">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="Name">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="type"
-                                    label="Type">
-                            </el-table-column>
+                        <el-table :data="ConstantInvokeDynamicInfo" stripe style="width: 100%">
+                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                            <<el-table-column prop="bootstrap_method_index" label="Bootstrap method index"></el-table-column>
+                            <<el-table-column prop="name" label="Name"></el-table-column>
+                            <<el-table-column prop="type" label="Type"></el-table-column>
                         </el-table>
                     </el-tab-pane>
                 </el-tabs>
