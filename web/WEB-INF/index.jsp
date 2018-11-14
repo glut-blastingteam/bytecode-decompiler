@@ -52,82 +52,113 @@
                         </el-alert>
                         <pre v-highlightjs="decompiled_java_code"><code class="java"></code></pre>
                     </el-tab-pane>
-                    <el-tab-pane label="Low level decompiling" name="low_level">
+                    <el-tab-pane label="Methods" name="methods">
+                        <el-table :data="class_methods" stripe style="width: 100%">
+                            <el-table-column prop="method_flag" label="Access flag"></el-table-column>
+                            <el-table-column prop="method_name" label="Method name"></el-table-column>
+                            <el-table-column prop="method_type" label="Method type"></el-table-column>
+                            <el-table-column prop="method_opcode" label="Method opcode"></el-table-column>
+                            <el-table-column prop="method_exceptions" label="Method exception"></el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                    <el-tab-pane label="Fields" name="fields">
+                        <el-table :data="class_fields" stripe style="width: 100%">
+                            <el-table-column prop="access_flag" label="Access flag"></el-table-column>
+                            <el-table-column prop="field_name" label="Field name"></el-table-column>
+                            <el-table-column prop="field_type" label="Field type"></el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                    <el-tab-pane label="Constant pool" name="const_pool">
                         <el-collapse v-model="activeName" accordion>
-                            <el-collapse-item title="Magic number" name="1">
-                                <div><el-tag type="success">{{low_representation.magic}}</el-tag></div>
+                            <el-collapse-item title="field reference">
+                                <el-table :data="ConstantFieldRefInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="field_class" label="Field class"></el-table-column>
+                                    <<el-table-column prop="field_name" label="Field name"></el-table-column>
+                                    <<el-table-column prop="field_type" label="Field type"></el-table-column>
+                                </el-table>
                             </el-collapse-item>
-                            <el-collapse-item title="Access flag" name="2">
-                                <div><el-tag type="success">{{low_representation.access_flag}}</el-tag></div>
+                            <el-collapse-item title="method reference">
+                                <el-table :data="ConstantMethodRefInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="method_class" label="Method class"></el-table-column>
+                                    <<el-table-column prop="method_name" label="Method name"></el-table-column>
+                                    <<el-table-column prop="method_type" label="Method type"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="interface method reference">
+                                <el-table :data="ConstantInterfaceMethodRefInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="interface_class" label="Interface class"></el-table-column>
+                                    <<el-table-column prop="interface_name" label="Interface name"></el-table-column>
+                                    <<el-table-column prop="interface_type" label="Interface type"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="string">
+                                <el-table :data="ConstantStringInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="string" label="String"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="integer">
+                                <el-table :data="ConstantIntegerInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="value" label="Value"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="float">
+                                <el-table :data="ConstantFloatInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="value" label="Value"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="long">
+                                <el-table :data="ConstantLongInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="value" label="Value"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="double">
+                                <el-table :data="ConstantDoubleInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="value" label="Value"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="name and type">
+                                <el-table :data="ConstantNameAndTypeInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="name" label="Name"></el-table-column>
+                                    <<el-table-column prop="descriptor" label="Descriptor"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="utf8 literals">
+                                <el-table :data="ConstantUtf8Info" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="utf8" label="UTF8"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="method handle">
+                                <el-table :data="ConstantMethodHandleInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="reference_kind" label="Reference kind"></el-table-column>
+                                    <<el-table-column prop="reference_index" label="Reference index"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="method type">
+                                <el-table :data="ConstantMethodTypeInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="descriptor" label="Descriptor"></el-table-column>
+                                </el-table>
+                            </el-collapse-item>
+                            <el-collapse-item title="call site(invoked_ynamic)">
+                                <el-table :data="ConstantInvokeDynamicInfo" stripe style="width: 100%">
+                                    <<el-table-column prop="index" label="Index" width="80"></el-table-column>
+                                    <<el-table-column prop="bootstrap_method_index" label="Bootstrap method index"></el-table-column>
+                                    <<el-table-column prop="bootstrap_name" label="Bootstrap name"></el-table-column>
+                                    <<el-table-column prop="bootstrap_type" label="Bootstrap type"></el-table-column>
+                                </el-table>
                             </el-collapse-item>
                         </el-collapse>
-                    </el-tab-pane>
-
-                    <el-tab-pane label="Constant pool" name="const_pool"
-                                 v-if="low_representation.constants.slots.length>0">
-                        <el-table :data="ConstantFieldRefInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="field_class" label="Field class"></el-table-column>
-                            <<el-table-column prop="field_name" label="Field name"></el-table-column>
-                            <<el-table-column prop="field_type" label="Field type"></el-table-column>
-                        </el-table>
-
-                        <el-table :data="ConstantMethodRefInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="method_class" label="Method class"></el-table-column>
-                            <<el-table-column prop="method_name" label="Method name"></el-table-column>
-                            <<el-table-column prop="method_type" label="Method type"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantInterfaceMethodRefInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="interface_class" label="Interface class"></el-table-column>
-                            <<el-table-column prop="interface_name" label="Interface name"></el-table-column>
-                            <<el-table-column prop="interface_type" label="Interface type"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantStringInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="string" label="String"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantIntegerInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="value" label="Value"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantFloatInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="value" label="Value"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantLongInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="value" label="Value"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantDoubleInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="value" label="Value"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantNameAndTypeInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="name" label="Name"></el-table-column>
-                            <<el-table-column prop="descriptor" label="Descriptor"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantUtf8Info" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="utf8" label="UTF8"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantMethodHandleInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="reference_kind" label="Reference kind"></el-table-column>
-                            <<el-table-column prop="reference_index" label="Reference index"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantMethodTypeInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="descriptor" label="Descriptor"></el-table-column>
-                        </el-table>
-                        <el-table :data="ConstantInvokeDynamicInfo" stripe style="width: 100%">
-                            <<el-table-column prop="index" label="Index" width="80"></el-table-column>
-                            <<el-table-column prop="bootstrap_method_index" label="Bootstrap method index"></el-table-column>
-                            <<el-table-column prop="name" label="Name"></el-table-column>
-                            <<el-table-column prop="type" label="Type"></el-table-column>
-                        </el-table>
                     </el-tab-pane>
                 </el-tabs>
             </div>
@@ -194,173 +225,107 @@
             ConstantUtf8Info:[],
             ConstantMethodHandleInfo:[],
             ConstantMethodTypeInfo:[],
-            ConstantInvokeDynamicInfo:[]
+            ConstantInvokeDynamicInfo:[],
+            class_fields:[],
+            class_methods:[],
         },
 
         methods: {
             tabClick(tab, event) {
                 this.active = 2;
+                // Lazy computations
+                if(tab.name==="high_level"){
+                    this.decompiled_java_code = function(text){
+                        // Prelude comments
+                        let result =
+                            '// Note that below codes are not exactly valid, you should not attempt to compile it\n' +
+                            '// Compiled with jdk_'+text.version+'\n';
+
+                        // Package declaration
+                        var class_name = "";
+                        var package_name = "";
+                        if(text.this_class.split('.').length===2){
+                            package_name = text.this_class.split(".")[0];
+                            class_name = text.this_class.split(".")[1];
+                            result +='package '+package_name+'\n\n';
+                        }else {
+                            class_name = text.this_class.split(".")[0];
+                        }
+
+
+                        // Class declaration
+                        result += text.access_flag+' class ' + class_name + ' extends '+ text.super_class;
+
+                        // Implemented interfaces
+                        if(text.interfaces.length >0){
+                            result +='\n\t\t implements ';
+                            for(let i=0;i<text.interfaces.length;i++){
+                                result+=text.interfaces[i];
+                                if(i!==text.interfaces.length-1){
+                                    result+=',';
+                                }
+                            }
+                        }
+
+                        // Left brace
+                        result += '{\n';
+
+                        // Field
+                        for(let i=0;i<text.fields.length;i++){
+                            result +='\t';
+                            result += text.fields[i].field;
+                            result += ';\n';
+                        }
+
+                        // Method
+                        result +='\n';
+                        for(let i=0;i<text.methods.length;i++){
+                            result +='\t';
+                            result += text.methods[i].method_signature.replace(/<init>/,class_name);
+                            result +='{\n';
+                            var op = text.methods[i].method_opcode.split(',');
+                            for(let k=0;k<op.length;k++){
+                                result += '\t\t'+op[k]+'\n';
+                            }
+                            if(text.methods[i].method_exceptions.length>0){
+                                result +='\t\t// Try-Catch-Finally exception tables\n';
+                                for(let p = 0;p<text.methods[i].method_exceptions.length;p++){
+                                    result += '\t\t'+text.methods[i].method_exceptions[p]+'\n';
+                                }
+                            }
+
+                            result +='\t}\n'
+                        }
+
+                        // Right Brace
+                        result += '}\n';
+                        return result
+                    }(this.high_representation);
+                }else if(tab.name==="methods"){
+                    this.class_methods = this.low_representation.methods;
+                }else if(tab.name==="fields"){
+                    this.class_fields = this.low_representation.fields;
+                }else if(tab.name==="const_pool"){
+                    for(let i=0;i<this.low_representation.constants.slots.length;i++){
+                        let slot = this.low_representation.constants.slots[i];
+
+                        var pushing_content = {};
+                        for(var prop in slot){
+                            if(typeof prop !=="function" && prop!=="type"){
+                                pushing_content[prop]=slot[prop];
+                            }
+                        }
+                        this[slot.type].push(pushing_content);
+                    }
+                }
+
             },
 
             uploadSuccess(res, file) {
                 this.active++;
                 this.high_representation = eval('('+res.classfile_json_high+')');
                 this.low_representation = eval('('+res.classfile_json_low+')');
-                console.log(this.low_representation);
-
-                this.decompiled_java_code = function(text){
-                    // Prelude comments
-                    let result =
-                        '// Note that below codes are not exactly valid, you should not attempt to compile it\n' +
-                        '// Compiled with jdk_'+text.version+'\n';
-
-                    // Package declaration
-                    var class_name = "";
-                    var package_name = "";
-                    if(text.this_class.split('.').length===2){
-                        package_name = text.this_class.split(".")[0];
-                        class_name = text.this_class.split(".")[1];
-                        result +='package '+package_name+'\n\n';
-                    }else {
-                        class_name = text.this_class.split(".")[0];
-                    }
-
-
-                    // Class declaration
-                    result += text.access_flag+' class ' + class_name + ' extends '+ text.super_class;
-
-                    // Implemented interfaces
-                    if(text.interfaces.length >0){
-                        result +='\t\t implements ';
-                        for(let i=0;i<text.interfaces.length;i++){
-                            result+=text.interfaces[i];
-                            if(i!==text.interfaces.length-1){
-                                result+=',';
-                            }
-                        }
-                    }
-
-                    // Left brace
-                    result += '{\n';
-
-                    // Field
-                    for(let i=0;i<text.fields.length;i++){
-                        result +='\t';
-                        result += text.fields[i].field;
-                        result += ';\n';
-                    }
-
-                    // Method
-                    result +='\n';
-                    for(let i=0;i<text.methods.length;i++){
-                        result +='\t';
-                        result += text.methods[i].method_signature.replace(/<init>/,class_name);
-                        result +='{\n';
-                        var op = text.methods[i].method_opcode.split(',');
-                        for(let k=0;k<op.length;k++){
-                            result += '\t\t'+op[k]+'\n';
-                        }
-                        if(text.methods[i].method_exceptions.length>0){
-                            result +='\t\t// Try-Catch-Finally exception tables\n';
-                            for(let p = 0;p<text.methods[i].method_exceptions.length;p++){
-                                result += '\t\t'+text.methods[i].method_exceptions[p]+'\n';
-                            }
-                        }
-
-                        result +='\t}\n'
-                    }
-
-                    // Right Brace
-                    result += '}\n';
-                    return result
-                }(this.high_representation)
-                for(let i=0;i<this.low_representation.constants.slots.length;i++){
-                    let slot = this.low_representation.constants.slots[i];
-                    if(slot.type==='ConstantClassInfo'){
-                        this.ConstantClassInfo.push({
-                            index:slot.index,
-                            class_name:slot.class_name
-                        })
-                    }else if(slot.type==='ConstantFieldRefInfo'){
-                        this.ConstantFieldRefInfo.push({
-                            index:slot.index,
-                            field_class:slot.field_class,
-                            field_name:slot.field_name,
-                            field_type:slot.field_type
-                        })
-                    }else if(slot.type==='ConstantMethodRefInfo'){
-                        this.ConstantMethodRefInfo.push({
-                            index:slot.index,
-                            method_class:slot.method_class,
-                            method_name:slot.method_name,
-                            method_type:slot.method_type
-                        })
-                    }else if(slot.type==='ConstantInterfaceMethodRefInfo'){
-                        this.ConstantInterfaceMethodRefInfo.push({
-                            index:slot.index,
-                            interface_class:slot.interface_class,
-                            interface_name:slot.interface_name,
-                            interface_type:slot.interface_type
-                        })
-                    }else if(slot.type==='ConstantStringInfo'){
-                        this.ConstantStringInfo.push({
-                            index:slot.index,
-                            string:slot.string
-                        })
-                    }else if(slot.type==='ConstantIntegerInfo'){
-                        this.ConstantIntegerInfo.push({
-                            index:slot.index,
-                            value:slot.value
-                        })
-                    }else if(slot.type==='ConstantFloatInfo'){
-                        this.ConstantFloatInfo.push({
-                            index:slot.index,
-                            value:slot.value
-                        })
-                    }else if(slot.type==='ConstantLongInfo'){
-                        this.ConstantLongInfo.push({
-                            index:slot.index,
-                            value:slot.value
-                        })
-                    }else if(slot.type==='ConstantDoubleInfo'){
-                        this.ConstantDoubleInfo.push({
-                            index:slot.index,
-                            value:slot.value
-                        })
-                    }else if(slot.type==='ConstantNameAndTypeInfo'){
-                        this.ConstantNameAndTypeInfo.push({
-                            index:slot.index,
-                            name:slot.name,
-                            descriptor:slot.descriptor
-                        })
-                    }else if(slot.type==='ConstantUtf8Info'){
-                        this.ConstantUtf8Info.push({
-                            index:slot.index,
-                            utf8:slot.utf8
-                        })
-                    }else if(slot.type==='ConstantMethodHandleInfo'){
-                        this.ConstantMethodHandleInfo.push({
-                            index:slot.index,
-                            reference_index:slot.reference_index,
-                            reference_kind:slot.reference_kind
-                        })
-                    }else if(slot.type==='ConstantMethodTypeInfo'){
-                        this.ConstantMethodTypeInfo.push({
-                            index:slot.index,
-                            descriptor:slot.descriptor,
-                        })
-                    }else if(slot.type==='ConstantInvokeDynamicInfo'){
-                        this.ConstantInvokeDynamicInfo.push({
-                            index:slot.index,
-                            bootstrap_method_index:slot.bootstrap_method_index,
-                            name:slot.name,
-                            type:slot.type
-                        })
-                    }else{
-                        // impossible!
-                    }
-                }
-
+                // Delay more computations until they actually are requested;
             },
         }
     })
