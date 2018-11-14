@@ -215,13 +215,19 @@
                         '// Compiled with jdk_'+text.version+'\n';
 
                     // Package declaration
-                    var class_name = text.this_class.split('.');
-                    if(class_name.length===2){
-                        result +='package '+class_name[0]+'\n\n';
+                    var class_name = "";
+                    var package_name = "";
+                    if(text.this_class.split('.').length===2){
+                        package_name = text.this_class.split(".")[0];
+                        class_name = text.this_class.split(".")[1];
+                        result +='package '+package_name+'\n\n';
+                    }else {
+                        class_name = text.this_class.split(".")[0];
                     }
 
+
                     // Class declaration
-                    result += text.access_flag+' class ' + (class_name.length===2?class_name[1]:class_name[0]) + ' extends '+ text.super_class;
+                    result += text.access_flag+' class ' + class_name + ' extends '+ text.super_class;
 
                     // Implemented interfaces
                     if(text.interfaces.length >0){
@@ -248,7 +254,7 @@
                     result +='\n';
                     for(let i=0;i<text.methods.length;i++){
                         result +='\t';
-                        result += text.methods[i].method_signature;
+                        result += text.methods[i].method_signature.replace(/<init>/,class_name);
                         result +='{\n';
                         var op = text.methods[i].method_opcode.split(',');
                         for(let k=0;k<op.length;k++){
